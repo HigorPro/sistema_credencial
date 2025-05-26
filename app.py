@@ -4,8 +4,8 @@ import uuid
 conexao = pymysql.connect(
     host='localhost',
     user='root',
-    password='Roseradija1#',
-    database='projeto_final'
+    password='',
+    database=''
 )
 cursor = conexao.cursor()
 
