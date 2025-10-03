@@ -1,0 +1,63 @@
+-- Criação da tabela lista_de_cadastrados
+CREATE TABLE lista_de_cadastrados (
+    cpf CHAR(11) PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    data_nasc DATE NOT NULL,
+    num_tel VARCHAR(15),
+    email VARCHAR(100),
+    colaborador BOOLEAN NOT NULL,
+    cart_trabalho VARCHAR(50) NULL,
+    cep CHAR(9) NULL,
+    CHECK (colaborador = 1 OR cart_trabalho IS NULL),
+    CHECK (colaborador = 1 OR cep IS NULL),
+    CHECK (colaborador IN (0, 1))
+);
+
+-- Criação da tabela eventos
+CREATE TABLE eventos (
+    id_evento INT PRIMARY KEY AUTO_INCREMENT,
+    nome_evento VARCHAR(100) NOT NULL,
+    local_evento VARCHAR(100) NOT NULL,
+    data_evento DATE NOT NULL,
+    preco_evento DECIMAL(6, 2) NOT NULL
+);
+
+-- Criação da tabela cracha com id_cracha como CHAR(5)
+CREATE TABLE cracha (
+    id_cracha CHAR(5) PRIMARY KEY NOT NULL,  -- Reduzido para CHAR(5)
+    id_evento INT NOT NULL,
+    FOREIGN KEY(id_evento) REFERENCES eventos(id_evento),
+    cpf CHAR(11) NOT NULL,
+    FOREIGN KEY(cpf) REFERENCES lista_de_cadastrados(cpf)
+);
+
+-- Criação da tabela lista_presenca
+CREATE TABLE lista_presenca (
+    presenca BOOLEAN ,
+    id_cracha CHAR(5) primary key,
+    FOREIGN KEY(id_cracha) REFERENCES cracha(id_cracha)
+);
+
+-- Consulta para verificar presença, considerando o id_cracha
+SELECT presenca
+FROM lista_presenca
+WHERE id_cracha = 'abc12';  -- Substitua 'abc12' por um id_cracha real
+INSERT INTO eventos (nome_evento, local_evento, data_evento, preco_evento)
+VALUES
+('BGS', 'São Paulo', '2025-09-01', 200.00),
+('ComicCon', 'São Paulo', '2025-12-01', 150.00),
+('UniFecaf Expo Tech', 'UniFecaf - São Paulo', '2025-10-01', 100.00);
+select * from lista_presenca;
+CREATE TABLE cracha_evento (
+    id_cracha CHAR(5),
+    id_evento INT,
+    PRIMARY KEY (id_cracha, id_evento)
+);
+select * from cracha;
+ALTER TABLE cracha_evento
+ADD CONSTRAINT fk_cracha
+FOREIGN KEY (id_cracha) REFERENCES cracha(id_cracha);
+
+ALTER TABLE cracha_evento
+ADD CONSTRAINT fk_evento
+FOREIGN KEY (id_evento) REFERENCES eventos(id_evento);
